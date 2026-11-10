@@ -13,4 +13,7 @@ dotnet --version
 echo "==> Building & Publishing Blazor WebAssembly (.NET 10)..."
 dotnet publish Portfolio.Wasm/Portfolio.Wasm.csproj -c Release -o dist
 
+# Ensure 404.html is available for SPA client-side routing on any host
+cp dist/wwwroot/index.html dist/wwwroot/404.html
+
 echo "==> Build complete! Output is in dist/wwwroot"

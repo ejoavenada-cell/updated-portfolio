@@ -1,11 +1,9 @@
 {
   "buildCommand": "bash build.sh",
   "outputDirectory": "dist/wwwroot",
-  "cleanUrls": true,
-  "trailingSlash": false,
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/((?!.*\\.).*)",
       "destination": "/index.html"
     }
   ],
