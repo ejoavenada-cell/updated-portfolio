@@ -8,6 +8,8 @@ public class SupabaseAuthStateProvider : AuthenticationStateProvider
     private readonly Supabase.Client? _supabase;
     private ClaimsPrincipal _currentUser = new(new ClaimsIdentity());
 
+    public SupabaseAuthStateProvider() : this(null) { }
+
     public SupabaseAuthStateProvider(Supabase.Client? supabase = null)
     {
         _supabase = supabase;

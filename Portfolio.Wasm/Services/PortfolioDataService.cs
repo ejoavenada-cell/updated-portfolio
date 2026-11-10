@@ -13,6 +13,8 @@ public class PortfolioDataService
     private List<ExperienceItem>? _cachedExperiences;
     private List<ContactMessage>? _cachedMessages;
 
+    public PortfolioDataService() : this(null) { }
+
     public PortfolioDataService(Supabase.Client? supabase = null)
     {
         _supabase = supabase;

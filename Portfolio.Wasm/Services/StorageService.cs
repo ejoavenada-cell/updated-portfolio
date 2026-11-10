@@ -7,6 +7,8 @@ public class StorageService
     private readonly Supabase.Client? _supabase;
     private const string BucketName = "portfolio-media";
 
+    public StorageService() : this(null) { }
+
     public StorageService(Supabase.Client? supabase = null)
     {
         _supabase = supabase;

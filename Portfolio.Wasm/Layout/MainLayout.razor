@@ -215,8 +215,15 @@
     {
         if (firstRender)
         {
-            objRef = DotNetObjectReference.Create(this);
-            await JS.InvokeVoidAsync("registerCommandPaletteShortcut", objRef);
+            try
+            {
+                objRef = DotNetObjectReference.Create(this);
+                await JS.InvokeVoidAsync("registerCommandPaletteShortcut", objRef);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Command palette JS notice: {ex.Message}");
+            }
         }
     }
 
