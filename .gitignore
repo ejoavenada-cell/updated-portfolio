@@ -1,0 +1,19 @@
+## .NET Core / Blazor WASM
+bin/
+obj/
+publish/
+dist/
+.vscode/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+## Vercel
+.vercel

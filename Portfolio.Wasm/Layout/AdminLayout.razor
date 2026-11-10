@@ -1,0 +1,89 @@
+@inherits LayoutComponentBase
+@inject NavigationManager Navigation
+@inject SupabaseAuthStateProvider AuthStateProvider
+
+<div class="min-h-screen bg-[#05070B] text-slate-100 flex flex-col md:flex-row font-sans selection:bg-[#00F0FF]/30 selection:text-white">
+    <!-- Admin Sidebar -->
+    <aside class="w-full md:w-64 bg-[#0A0F1D]/90 border-r border-[#00F0FF]/20 backdrop-blur-xl flex flex-col justify-between p-5">
+        <div>
+            <!-- Admin Brand -->
+            <div class="flex items-center space-x-3 pb-6 border-b border-[#00F0FF]/15">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#00F0FF] to-[#2563EB] flex items-center justify-center font-mono font-bold text-black shadow-[0_0_15px_rgba(0,240,255,0.4)]">
+                    AP
+                </div>
+                <div>
+                    <h2 class="font-bold text-white text-sm tracking-wide">ADMIN CONSOLE</h2>
+                    <span class="text-[11px] font-mono text-[#00F0FF]">.NET 10 CONTROL PLANE</span>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="mt-6 flex flex-col space-y-1.5 font-mono text-xs">
+                <NavLink href="/admin" Match="NavLinkMatch.All" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-[#111A2E] hover:border hover:border-[#00F0FF]/30 transition-all [&.active]:bg-[#111A2E] [&.active]:text-[#00F0FF] [&.active]:border [&.active]:border-[#00F0FF]/50 [&.active]:shadow-[0_0_15px_rgba(0,240,255,0.15)]">
+                    <svg class="w-4 h-4 text-[#00F0FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    <span>Dashboard</span>
+                </NavLink>
+
+                <NavLink href="/admin/profile" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-[#111A2E] hover:border hover:border-[#00F0FF]/30 transition-all [&.active]:bg-[#111A2E] [&.active]:text-[#00F0FF] [&.active]:border [&.active]:border-[#00F0FF]/50 [&.active]:shadow-[0_0_15px_rgba(0,240,255,0.15)]">
+                    <svg class="w-4 h-4 text-[#00F0FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    <span>Profile Editor</span>
+                </NavLink>
+
+                <NavLink href="/admin/projects" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-[#111A2E] hover:border hover:border-[#00F0FF]/30 transition-all [&.active]:bg-[#111A2E] [&.active]:text-[#00F0FF] [&.active]:border [&.active]:border-[#00F0FF]/50 [&.active]:shadow-[0_0_15px_rgba(0,240,255,0.15)]">
+                    <svg class="w-4 h-4 text-[#00F0FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                    <span>Projects CRUD</span>
+                </NavLink>
+
+                <NavLink href="/admin/experience" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-[#111A2E] hover:border hover:border-[#00F0FF]/30 transition-all [&.active]:bg-[#111A2E] [&.active]:text-[#00F0FF] [&.active]:border [&.active]:border-[#00F0FF]/50 [&.active]:shadow-[0_0_15px_rgba(0,240,255,0.15)]">
+                    <svg class="w-4 h-4 text-[#00F0FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                    </svg>
+                    <span>Skills & Timeline</span>
+                </NavLink>
+
+                <NavLink href="/admin/inbox" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-[#111A2E] hover:border hover:border-[#00F0FF]/30 transition-all [&.active]:bg-[#111A2E] [&.active]:text-[#00F0FF] [&.active]:border [&.active]:border-[#00F0FF]/50 [&.active]:shadow-[0_0_15px_rgba(0,240,255,0.15)]">
+                    <svg class="w-4 h-4 text-[#00F0FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    <span>Inbox</span>
+                </NavLink>
+            </nav>
+        </div>
+
+        <!-- Footer / Logout Actions -->
+        <div class="pt-6 border-t border-[#00F0FF]/15 space-y-2 font-mono text-xs">
+            <a href="/" class="flex items-center space-x-2 px-3 py-2 rounded-lg text-slate-400 hover:text-[#00F0FF] hover:bg-[#111A2E] transition-colors">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                <span>Live Portfolio</span>
+            </a>
+
+            <button @onclick="HandleSignOut" class="w-full flex items-center space-x-2 px-3 py-2 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                <span>Sign Out</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 p-6 md:p-10 overflow-y-auto">
+        @Body
+    </main>
+</div>
+
+@code {
+    private async Task HandleSignOut()
+    {
+        await AuthStateProvider.SignOutAsync();
+        Navigation.NavigateTo("/", forceLoad: true);
+    }
+}

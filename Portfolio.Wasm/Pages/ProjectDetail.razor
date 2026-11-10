@@ -1,0 +1,155 @@
+@page "/projects/{Slug}"
+@inject PortfolioDataService PortfolioService
+@inject NavigationManager Navigation
+@using Markdig
+
+<PageTitle>@(project?.Title ?? "Case Study") | Project Details</PageTitle>
+
+@if (isLoading)
+{
+    <div class="py-24 text-center">
+        <div class="inline-block w-8 h-8 border-2 border-[#00F0FF] border-t-transparent rounded-full animate-spin"></div>
+        <p class="mt-4 font-mono text-xs text-slate-400">RETRIEVING ARCHITECTURE DATA...</p>
+    </div>
+}
+else if (project == null)
+{
+    <div class="glass-panel p-10 rounded-2xl text-center max-w-lg mx-auto my-12 border border-red-500/30">
+        <h2 class="text-xl font-bold font-mono text-red-400 mb-2">PROJECT NOT FOUND</h2>
+        <p class="text-slate-400 text-sm mb-6">The requested case study could not be located in the database.</p>
+        <a href="/#projects" class="px-5 py-2.5 rounded-xl bg-[#00F0FF] text-[#05070B] font-mono text-xs font-bold hover:bg-[#00F0FF]/90 transition-all">
+            Return to Projects
+        </a>
+    </div>
+}
+else
+{
+    <div class="py-6 max-w-4xl mx-auto space-y-10">
+        <!-- Back Navigation -->
+        <div>
+            <a href="/#projects" class="inline-flex items-center space-x-2 text-xs font-mono text-[#00F0FF] hover:underline">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                <span>Back to All Projects</span>
+            </a>
+        </div>
+
+        <!-- Header Card -->
+        <div class="glass-panel rounded-3xl p-8 sm:p-10 border border-[#00F0FF]/25 shadow-[0_0_30px_rgba(0,240,255,0.1)]">
+            <div class="flex flex-wrap gap-2 mb-4">
+                @foreach (var tag in project.TechTags)
+                {
+                    <span class="px-3 py-1 rounded-lg bg-[#111A2E] text-[#00F0FF] border border-[#00F0FF]/25 text-xs font-mono">
+                        @tag
+                    </span>
+                }
+            </div>
+
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-white font-sans tracking-tight mb-4">
+                @project.Title
+            </h1>
+
+            <p class="text-slate-300 text-base sm:text-lg leading-relaxed mb-6">
+                @project.Summary
+            </p>
+
+            <div class="flex flex-wrap items-center gap-4 pt-4 border-t border-[#00F0FF]/15 font-mono text-xs">
+                @if (!string.IsNullOrEmpty(project.LiveUrl))
+                {
+                    <a href="@project.LiveUrl" target="_blank" rel="noopener noreferrer"
+                       class="px-5 py-2.5 rounded-xl bg-[#00F0FF] text-[#05070B] font-bold hover:bg-[#00F0FF]/90 transition-all flex items-center space-x-2 shadow-[0_0_15px_rgba(0,240,255,0.3)]">
+                        <span>Live Deployment</span>
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                    </a>
+                }
+
+                @if (!string.IsNullOrEmpty(project.RepoUrl))
+                {
+                    <a href="@project.RepoUrl" target="_blank" rel="noopener noreferrer"
+                       class="px-5 py-2.5 rounded-xl bg-[#111A2E] text-slate-200 border border-[#00F0FF]/30 hover:border-[#00F0FF] hover:text-[#00F0FF] transition-all flex items-center space-x-2">
+                        <svg class="w-4 h-4 fill-currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+                        </svg>
+                        <span>Source Code</span>
+                    </a>
+                }
+            </div>
+        </div>
+
+        <!-- Primary Thumbnail & Gallery -->
+        @if (project.GalleryUrls.Count > 0 || !string.IsNullOrEmpty(project.ThumbnailUrl))
+        {
+            <div class="space-y-4">
+                <h2 class="text-sm font-mono text-[#00F0FF] uppercase tracking-wider font-semibold">Visual Gallery</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    @if (!string.IsNullOrEmpty(project.ThumbnailUrl))
+                    {
+                        <div class="rounded-2xl overflow-hidden border border-[#00F0FF]/25 shadow-lg max-h-72">
+                            <img src="@project.ThumbnailUrl" alt="Thumbnail" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+                        </div>
+                    }
+                    @foreach (var img in project.GalleryUrls)
+                    {
+                        <div class="rounded-2xl overflow-hidden border border-[#00F0FF]/25 shadow-lg max-h-72">
+                            <img src="@img" alt="Screenshot" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        <!-- Case Study Markdown Body -->
+        <div class="glass-panel rounded-3xl p-8 sm:p-10 border border-[#00F0FF]/20">
+            <h2 class="text-sm font-mono text-[#00F0FF] uppercase tracking-wider font-semibold mb-4 border-b border-[#00F0FF]/20 pb-2">
+                Deep Dive & Technical Case Study
+            </h2>
+
+            <div class="markdown-body">
+                @if (!string.IsNullOrWhiteSpace(project.ContentMarkdown))
+                {
+                    @((MarkupString)renderedHtml)
+                }
+                else
+                {
+                    <p class="text-slate-400 italic">No case study documentation recorded for this project yet.</p>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public string Slug { get; set; } = string.Empty;
+
+    private ProjectItem? project;
+    private string renderedHtml = string.Empty;
+    private bool isLoading = true;
+
+    private static readonly MarkdownPipeline pipeline = new MarkdownPipelineBuilder()
+        .UseAdvancedExtensions()
+        .Build();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        isLoading = true;
+        try
+        {
+            project = await PortfolioService.GetProjectBySlugAsync(Slug);
+            if (project != null && !string.IsNullOrWhiteSpace(project.ContentMarkdown))
+            {
+                renderedHtml = Markdown.ToHtml(project.ContentMarkdown, pipeline);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading project slug {Slug}: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

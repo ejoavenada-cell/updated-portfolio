@@ -1,0 +1,86 @@
+@page "/admin/inbox"
+@layout AdminLayout
+@attribute [Authorize]
+@inject PortfolioDataService PortfolioService
+
+<PageTitle>Inbox | Admin</PageTitle>
+
+<div class="max-w-4xl space-y-6">
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-bold text-white font-sans">Inquiries Inbox</h1>
+            <p class="text-xs font-mono text-[#00F0FF]">INCOMING TRANSMISSIONS FROM CONTACT SECTION</p>
+        </div>
+        <div class="text-xs font-mono text-slate-400">
+            Total Messages: @messages.Count
+        </div>
+    </div>
+
+    @if (messages.Count == 0)
+    {
+        <div class="glass-panel p-12 rounded-2xl text-center border border-[#00F0FF]/20 text-slate-400 font-mono text-xs">
+            NO INCOMING INQUIRIES REGISTERED YET.
+        </div>
+    }
+    else
+    {
+        <div class="space-y-4">
+            @foreach (var msg in messages.OrderByDescending(m => m.CreatedAt))
+            {
+                <div class="glass-panel p-6 rounded-2xl border @(msg.IsRead ? "border-[#00F0FF]/20 opacity-80" : "border-[#00F0FF]/60 shadow-[0_0_20px_rgba(0,240,255,0.15)]") transition-all space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#00F0FF]/15 pb-3">
+                        <div class="flex items-center space-x-3">
+                            <span class="w-2.5 h-2.5 rounded-full @(msg.IsRead ? "bg-slate-600" : "bg-[#00F0FF] animate-pulse")"></span>
+                            <span class="font-bold text-white text-sm">@msg.SenderName</span>
+                            <a href="mailto:@msg.SenderEmail" class="text-xs font-mono text-[#00F0FF] hover:underline">
+                                @msg.SenderEmail
+                            </a>
+                        </div>
+                        <span class="text-[11px] font-mono text-slate-400">
+                            @msg.CreatedAt.ToLocalTime().ToString("MMM dd, yyyy HH:mm")
+                        </span>
+                    </div>
+
+                    <p class="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap font-sans">
+                        @msg.Message
+                    </p>
+
+                    <div class="flex items-center justify-end space-x-3 pt-2 font-mono text-xs">
+                        <button @onclick="@(() => ToggleReadStatus(msg))" class="px-3 py-1 rounded bg-[#111A2E] text-slate-300 hover:text-white border border-[#00F0FF]/20">
+                            @(msg.IsRead ? "Mark Unread" : "Mark Read")
+                        </button>
+                        <button @onclick="@(() => DeleteMessage(msg.Id))" class="px-3 py-1 rounded bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/30">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private List<ContactMessage> messages = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadMessages();
+    }
+
+    private async Task LoadMessages()
+    {
+        messages = await PortfolioService.GetMessagesAsync(forceReload: true);
+    }
+
+    private async Task ToggleReadStatus(ContactMessage msg)
+    {
+        await PortfolioService.MarkMessageReadAsync(msg.Id, !msg.IsRead);
+        await LoadMessages();
+    }
+
+    private async Task DeleteMessage(Guid id)
+    {
+        await PortfolioService.DeleteMessageAsync(id);
+        await LoadMessages();
+    }
+}

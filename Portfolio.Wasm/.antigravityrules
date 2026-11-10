@@ -1,0 +1,25 @@
+# Antigravity Agent Rules - Blazor .NET 10 Portfolio
+
+## Tech Stack Constraints
+- Framework: Blazor WebAssembly Standalone targeting .NET 10 (`net10.0`).
+- Language: C# 13+ with nullable reference types enabled.
+- Database/Backend: `supabase-csharp` (Postgrest, Gotrue, Storage). Do NOT create an ASP.NET Core Web API backend; communicate directly with Supabase from WASM using Row-Level Security (RLS).
+- Styling: Tailwind CSS. Never use Bootstrap or default Blazor purple gradients.
+
+## Strict Color Palette & UI Theme
+- Primary Background: `#05070B` (Obsidian Black)
+- Card/Surface Background: `#0A0F1D` (Deep Navy) with `backdrop-blur-md`
+- Elevated/Hover Surface: `#111A2E` (Midnight Navy)
+- Primary Neon Accent: `#00F0FF` (Electric Cyan)
+- Secondary Accent: `#2563EB` (Royal Blue)
+- Text Primary: `#F8FAFC` (Slate 50)
+- Text Secondary: `#94A3B8` (Slate 400)
+- Borders: `border border-[#00F0FF]/20 hover:border-[#00F0FF]/60`
+- Shadows on Hover: `hover:shadow-[0_0_20px_rgba(0,240,255,0.2)]`
+- Fonts: `Inter` for UI body/headings, `JetBrains Mono` for tags, metrics, and code.
+
+## Coding Standards
+- Always inherit `BaseModel` from `Supabase.Postgrest.Models` for database entities.
+- Always convert uploaded images via `RequestImageFileAsync("image/webp", 1600, 900)` before uploading to the `portfolio-media` bucket.
+- Never hardcode personal data in `.razor` files; always bind to `PortfolioDataService`.
+- Gracefully handle offline or unconfigured Supabase credentials with fallback demo data so the app runs smoothly out-of-the-box.

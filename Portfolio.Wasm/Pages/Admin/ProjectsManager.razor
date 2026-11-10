@@ -1,0 +1,301 @@
+@page "/admin/projects"
+@layout AdminLayout
+@attribute [Authorize]
+@inject PortfolioDataService PortfolioService
+@inject StorageService Storage
+
+<PageTitle>Projects Manager | Admin</PageTitle>
+
+<div class="max-w-6xl space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-white font-sans">Projects & Case Studies Manager</h1>
+            <p class="text-xs font-mono text-[#00F0FF]">FULL CRUD & BROWSER WEBP STORAGE PIPELINE</p>
+        </div>
+
+        <button @onclick="StartNewProject" class="px-5 py-2.5 rounded-xl bg-[#00F0FF] text-[#05070B] font-bold font-mono text-xs hover:bg-[#00F0FF]/90 transition-all flex items-center space-x-2 shadow-[0_0_15px_rgba(0,240,255,0.3)]">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            <span>Create Case Study</span>
+        </button>
+    </div>
+
+    @if (isEditing && activeProject != null)
+    {
+        <!-- Project Editor Form -->
+        <div class="glass-panel p-6 sm:p-8 rounded-2xl border border-[#00F0FF]/30 space-y-5">
+            <div class="flex items-center justify-between border-b border-[#00F0FF]/15 pb-4">
+                <h2 class="text-lg font-bold font-mono text-white">
+                    @(isNew ? "NEW PROJECT SPECIFICATION" : $"EDITING: {activeProject.Title}")
+                </h2>
+                <button @onclick="CancelEdit" class="text-xs font-mono text-slate-400 hover:text-white">✕ Cancel</button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-mono text-slate-300 mb-1">PROJECT TITLE</label>
+                    <input @bind="activeProject.Title" @bind:after="OnTitleChanged" required
+                           class="w-full px-4 py-2.5 rounded-xl bg-[#111A2E] text-white border border-[#00F0FF]/25 focus:border-[#00F0FF] focus:outline-none text-sm font-mono" />
+                </div>
+
+                <div>
+                    <label class="block text-xs font-mono text-slate-300 mb-1">URL SLUG</label>
+                    <input @bind="activeProject.Slug" required
+                           class="w-full px-4 py-2.5 rounded-xl bg-[#111A2E] text-white border border-[#00F0FF]/25 focus:border-[#00F0FF] focus:outline-none text-sm font-mono" />
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-mono text-slate-300 mb-1">EXECUTIVE SUMMARY</label>
+                <input @bind="activeProject.Summary" required
+                       class="w-full px-4 py-2.5 rounded-xl bg-[#111A2E] text-white border border-[#00F0FF]/25 focus:border-[#00F0FF] focus:outline-none text-sm font-mono" />
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-mono text-slate-300 mb-1">TECH TAGS (COMMA SEPARATED)</label>
+                    <input @bind="tagsInput" @bind:after="UpdateTags"
+                           placeholder=".NET 10, Blazor WASM, Supabase, Tailwind CSS"
+                           class="w-full px-4 py-2.5 rounded-xl bg-[#111A2E] text-white border border-[#00F0FF]/25 focus:border-[#00F0FF] focus:outline-none text-sm font-mono" />
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-mono text-slate-300 mb-1">DISPLAY ORDER</label>
+                        <input @bind="activeProject.DisplayOrder" type="number"
+                               class="w-full px-4 py-2.5 rounded-xl bg-[#111A2E] text-white border border-[#00F0FF]/25 focus:border-[#00F0FF] focus:outline-none text-sm font-mono" />
+                    </div>
+                    <div class="flex items-center pt-5">
+                        <label class="flex items-center space-x-2 text-xs font-mono text-slate-300 cursor-pointer">
+                            <input @bind="activeProject.IsFeatured" type="checkbox" class="w-4 h-4 rounded text-[#00F0FF] bg-[#111A2E] border-[#00F0FF]/30" />
+                            <span>Featured Card</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-mono text-slate-300 mb-1">LIVE DEMO URL</label>
+                    <input @bind="activeProject.LiveUrl" placeholder="https://..."
+                           class="w-full px-4 py-2.5 rounded-xl bg-[#111A2E] text-white border border-[#00F0FF]/25 focus:border-[#00F0FF] focus:outline-none text-sm font-mono" />
+                </div>
+
+                <div>
+                    <label class="block text-xs font-mono text-slate-300 mb-1">SOURCE REPO URL</label>
+                    <input @bind="activeProject.RepoUrl" placeholder="https://github.com/..."
+                           class="w-full px-4 py-2.5 rounded-xl bg-[#111A2E] text-white border border-[#00F0FF]/25 focus:border-[#00F0FF] focus:outline-none text-sm font-mono" />
+                </div>
+            </div>
+
+            <!-- Thumbnail Upload -->
+            <div class="p-4 rounded-xl bg-[#111A2E]/60 border border-[#00F0FF]/20 space-y-3">
+                <label class="block text-xs font-mono text-slate-300">THUMBNAIL IMAGE (OPTIMIZES TO WEBP 1600x900)</label>
+                <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                    <InputFile OnChange="HandleThumbnailUpload" class="text-xs font-mono text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[#00F0FF] file:text-[#05070B] cursor-pointer" />
+                    @if (!string.IsNullOrEmpty(activeProject.ThumbnailUrl))
+                    {
+                        <div class="w-20 h-12 rounded-lg overflow-hidden border border-[#00F0FF]/30">
+                            <img src="@activeProject.ThumbnailUrl" alt="Thumbnail Preview" class="w-full h-full object-cover" />
+                        </div>
+                    }
+                </div>
+                @if (isUploading)
+                {
+                    <p class="text-xs font-mono text-[#00F0FF] animate-pulse">Encoding WebP & streaming to Supabase Storage...</p>
+                }
+            </div>
+
+            <!-- Markdown Case Study Editor -->
+            <div>
+                <label class="block text-xs font-mono text-slate-300 mb-1">CASE STUDY CONTENT (MARKDOWN)</label>
+                <textarea @bind="activeProject.ContentMarkdown" rows="8"
+                          placeholder="### System Architecture&#10;&#10;Detailed explanations, metrics, benchmarks..."
+                          class="w-full px-4 py-2.5 rounded-xl bg-[#111A2E] text-white border border-[#00F0FF]/25 focus:border-[#00F0FF] focus:outline-none text-sm font-mono"></textarea>
+            </div>
+
+            <!-- Save Actions -->
+            <div class="flex items-center space-x-3 pt-3">
+                <button @onclick="SaveActiveProject" disabled="@isSaving"
+                        class="px-6 py-2.5 rounded-xl bg-[#00F0FF] text-[#05070B] font-bold font-mono text-xs hover:bg-[#00F0FF]/90 transition-all shadow-[0_0_15px_rgba(0,240,255,0.3)] disabled:opacity-50">
+                    @(isSaving ? "SAVING..." : "SAVE PROJECT")
+                </button>
+                <button @onclick="CancelEdit" class="px-5 py-2.5 rounded-xl bg-[#111A2E] text-slate-300 font-mono text-xs hover:text-white">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    }
+
+    <!-- Projects List Table -->
+    <div class="glass-panel rounded-2xl overflow-hidden border border-[#00F0FF]/20">
+        <div class="p-4 bg-[#111A2E]/50 border-b border-[#00F0FF]/15 flex items-center justify-between font-mono text-xs">
+            <span class="text-slate-300 font-semibold">ALL ACTIVE PROJECTS (@projects.Count)</span>
+            <span class="text-[#00F0FF]">SORTED BY DISPLAY ORDER</span>
+        </div>
+
+        <div class="divide-y divide-[#00F0FF]/10">
+            @foreach (var project in projects.OrderBy(p => p.DisplayOrder))
+            {
+                <div class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-[#111A2E]/30 transition-colors">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-12 rounded-lg bg-[#111A2E] overflow-hidden border border-[#00F0FF]/20 flex-shrink-0">
+                            @if (!string.IsNullOrEmpty(project.ThumbnailUrl))
+                            {
+                                <img src="@project.ThumbnailUrl" alt="@project.Title" class="w-full h-full object-cover" />
+                            }
+                        </div>
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <h3 class="font-bold text-white text-sm">@project.Title</h3>
+                                @if (project.IsFeatured)
+                                {
+                                    <span class="px-2 py-0.5 rounded bg-[#00F0FF]/20 text-[#00F0FF] text-[10px] font-mono border border-[#00F0FF]/30">FEATURED</span>
+                                }
+                            </div>
+                            <p class="text-xs font-mono text-slate-400 mt-0.5">/projects/@project.Slug • Order: @project.DisplayOrder</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-2 font-mono text-xs">
+                        <a href="/projects/@project.Slug" target="_blank" class="px-3 py-1.5 rounded-lg bg-[#111A2E] text-slate-300 hover:text-[#00F0FF] border border-[#00F0FF]/20">
+                            Preview
+                        </a>
+                        <button @onclick="@(() => EditProject(project))" class="px-3 py-1.5 rounded-lg bg-[#111A2E] text-[#00F0FF] hover:bg-[#00F0FF]/20 border border-[#00F0FF]/30">
+                            Edit
+                        </button>
+                        <button @onclick="@(() => DeleteProject(project.Id))" class="px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/30">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<ProjectItem> projects = new();
+    private ProjectItem? activeProject;
+    private bool isEditing;
+    private bool isNew;
+    private bool isSaving;
+    private bool isUploading;
+    private string tagsInput = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadProjects();
+    }
+
+    private async Task LoadProjects()
+    {
+        projects = await PortfolioService.GetProjectsAsync(forceReload: true);
+    }
+
+    private void StartNewProject()
+    {
+        activeProject = new ProjectItem
+        {
+            DisplayOrder = projects.Count + 1,
+            TechTags = new() { ".NET 10", "Blazor WASM" }
+        };
+        tagsInput = string.Join(", ", activeProject.TechTags);
+        isNew = true;
+        isEditing = true;
+    }
+
+    private void EditProject(ProjectItem project)
+    {
+        activeProject = new ProjectItem
+        {
+            Id = project.Id,
+            Title = project.Title,
+            Slug = project.Slug,
+            Summary = project.Summary,
+            ContentMarkdown = project.ContentMarkdown,
+            ThumbnailUrl = project.ThumbnailUrl,
+            GalleryUrls = new List<string>(project.GalleryUrls),
+            TechTags = new List<string>(project.TechTags),
+            LiveUrl = project.LiveUrl,
+            RepoUrl = project.RepoUrl,
+            IsFeatured = project.IsFeatured,
+            DisplayOrder = project.DisplayOrder
+        };
+        tagsInput = string.Join(", ", activeProject.TechTags);
+        isNew = false;
+        isEditing = true;
+    }
+
+    private void CancelEdit()
+    {
+        activeProject = null;
+        isEditing = false;
+    }
+
+    private void OnTitleChanged()
+    {
+        if (isNew && activeProject != null && !string.IsNullOrWhiteSpace(activeProject.Title))
+        {
+            activeProject.Slug = activeProject.Title.ToLowerInvariant()
+                .Replace(" ", "-")
+                .Replace(".", "-")
+                .Replace("/", "-");
+        }
+    }
+
+    private void UpdateTags()
+    {
+        if (activeProject != null)
+        {
+            activeProject.TechTags = tagsInput.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(t => t.Trim())
+                .Where(t => !string.IsNullOrEmpty(t))
+                .ToList();
+        }
+    }
+
+    private async Task HandleThumbnailUpload(InputFileChangeEventArgs e)
+    {
+        if (activeProject == null) return;
+        isUploading = true;
+        try
+        {
+            var url = await Storage.UploadImageAsync(e.File, "projects");
+            activeProject.ThumbnailUrl = url;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Thumbnail upload error: {ex.Message}");
+        }
+        finally
+        {
+            isUploading = false;
+        }
+    }
+
+    private async Task SaveActiveProject()
+    {
+        if (activeProject == null) return;
+        UpdateTags();
+        isSaving = true;
+        try
+        {
+            await PortfolioService.SaveProjectAsync(activeProject);
+            await LoadProjects();
+            isEditing = false;
+            activeProject = null;
+        }
+        finally
+        {
+            isSaving = false;
+        }
+    }
+
+    private async Task DeleteProject(Guid id)
+    {
+        await PortfolioService.DeleteProjectAsync(id);
+        await LoadProjects();
+    }
+}

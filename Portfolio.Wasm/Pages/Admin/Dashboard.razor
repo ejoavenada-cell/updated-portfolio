@@ -1,0 +1,143 @@
+@page "/admin"
+@layout AdminLayout
+@attribute [Authorize]
+@inject PortfolioDataService PortfolioService
+@inject NavigationManager Navigation
+
+<PageTitle>Admin Dashboard | Erick John</PageTitle>
+
+<div class="space-y-8 max-w-6xl">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-extrabold text-white font-sans tracking-tight">System Control Plane</h1>
+            <p class="text-xs font-mono text-[#00F0FF] mt-1">TELEMETRY & CONTENT MANAGEMENT</p>
+        </div>
+
+        <div class="flex items-center space-x-3">
+            <a href="/" target="_blank" class="px-4 py-2 rounded-xl bg-[#111A2E] text-slate-200 border border-[#00F0FF]/30 hover:border-[#00F0FF] hover:text-[#00F0FF] font-mono text-xs transition-all flex items-center space-x-2">
+                <span>View Live Site</span>
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <!-- Quick Metrics Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="glass-panel p-6 rounded-2xl border border-[#00F0FF]/20">
+            <div class="flex items-center justify-between text-slate-400 font-mono text-xs mb-2">
+                <span>PROJECTS</span>
+                <span class="text-[#00F0FF]">LIVE</span>
+            </div>
+            <div class="text-3xl font-extrabold text-white font-sans">@projectsCount</div>
+            <a href="/admin/projects" class="text-xs font-mono text-[#00F0FF] hover:underline mt-3 inline-block">Manage projects →</a>
+        </div>
+
+        <div class="glass-panel p-6 rounded-2xl border border-[#00F0FF]/20">
+            <div class="flex items-center justify-between text-slate-400 font-mono text-xs mb-2">
+                <span>TECH SKILLS</span>
+                <span class="text-[#00F0FF]">INDEXED</span>
+            </div>
+            <div class="text-3xl font-extrabold text-white font-sans">@skillsCount</div>
+            <a href="/admin/experience" class="text-xs font-mono text-[#00F0FF] hover:underline mt-3 inline-block">Edit skills →</a>
+        </div>
+
+        <div class="glass-panel p-6 rounded-2xl border border-[#00F0FF]/20">
+            <div class="flex items-center justify-between text-slate-400 font-mono text-xs mb-2">
+                <span>EXPERIENCES</span>
+                <span class="text-[#00F0FF]">NODES</span>
+            </div>
+            <div class="text-3xl font-extrabold text-white font-sans">@experiencesCount</div>
+            <a href="/admin/experience" class="text-xs font-mono text-[#00F0FF] hover:underline mt-3 inline-block">View timeline →</a>
+        </div>
+
+        <div class="glass-panel p-6 rounded-2xl border border-[#00F0FF]/20">
+            <div class="flex items-center justify-between text-slate-400 font-mono text-xs mb-2">
+                <span>UNREAD INQUIRIES</span>
+                <span class="@(unreadMessagesCount > 0 ? "text-yellow-400 animate-pulse" : "text-emerald-400")">STATUS</span>
+            </div>
+            <div class="text-3xl font-extrabold text-white font-sans">@unreadMessagesCount</div>
+            <a href="/admin/inbox" class="text-xs font-mono text-[#00F0FF] hover:underline mt-3 inline-block">Open inbox →</a>
+        </div>
+    </div>
+
+    <!-- System Status & Quick Actions -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Architecture Telemetry -->
+        <div class="glass-panel p-6 rounded-2xl border border-[#00F0FF]/20 space-y-4">
+            <h2 class="text-base font-bold font-mono text-white flex items-center space-x-2">
+                <span class="w-2 h-2 rounded-full bg-[#00F0FF]"></span>
+                <span>RUNTIME ENVIRONMENT</span>
+            </h2>
+
+            <div class="space-y-3 font-mono text-xs">
+                <div class="flex justify-between p-2.5 rounded-lg bg-[#111A2E]/60 border border-[#00F0FF]/15">
+                    <span class="text-slate-400">Target Framework:</span>
+                    <span class="text-[#00F0FF] font-semibold">.NET 10 (WebAssembly Standalone)</span>
+                </div>
+                <div class="flex justify-between p-2.5 rounded-lg bg-[#111A2E]/60 border border-[#00F0FF]/15">
+                    <span class="text-slate-400">Database Layer:</span>
+                    <span class="text-[#00F0FF] font-semibold">Supabase PostgreSQL + RLS</span>
+                </div>
+                <div class="flex justify-between p-2.5 rounded-lg bg-[#111A2E]/60 border border-[#00F0FF]/15">
+                    <span class="text-slate-400">Media Pipeline:</span>
+                    <span class="text-[#00F0FF] font-semibold">In-Browser WebP Converter (1600x900)</span>
+                </div>
+                <div class="flex justify-between p-2.5 rounded-lg bg-[#111A2E]/60 border border-[#00F0FF]/15">
+                    <span class="text-slate-400">Hosting Target:</span>
+                    <span class="text-[#00F0FF] font-semibold">Cloudflare Pages (0 Hosting Cost)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Jump Links -->
+        <div class="glass-panel p-6 rounded-2xl border border-[#00F0FF]/20 flex flex-col justify-between">
+            <div>
+                <h2 class="text-base font-bold font-mono text-white flex items-center space-x-2 mb-4">
+                    <span class="w-2 h-2 rounded-full bg-[#00F0FF]"></span>
+                    <span>FREQUENT WORKFLOWS</span>
+                </h2>
+                <div class="grid grid-cols-2 gap-3 font-mono text-xs">
+                    <a href="/admin/profile" class="p-3 rounded-xl bg-[#111A2E] border border-[#00F0FF]/20 hover:border-[#00F0FF] text-slate-200 hover:text-[#00F0FF] transition-all block">
+                        <div class="font-bold text-white mb-1">Edit Bio & Avatar</div>
+                        <div class="text-[11px] text-slate-400">Live bio, status & social links</div>
+                    </a>
+                    <a href="/admin/projects" class="p-3 rounded-xl bg-[#111A2E] border border-[#00F0FF]/20 hover:border-[#00F0FF] text-slate-200 hover:text-[#00F0FF] transition-all block">
+                        <div class="font-bold text-white mb-1">New Case Study</div>
+                        <div class="text-[11px] text-slate-400">Markdown + WebP uploader</div>
+                    </a>
+                    <a href="/admin/experience" class="p-3 rounded-xl bg-[#111A2E] border border-[#00F0FF]/20 hover:border-[#00F0FF] text-slate-200 hover:text-[#00F0FF] transition-all block">
+                        <div class="font-bold text-white mb-1">Reorder Skills</div>
+                        <div class="text-[11px] text-slate-400">Backend, Frontend & Tools</div>
+                    </a>
+                    <a href="/admin/inbox" class="p-3 rounded-xl bg-[#111A2E] border border-[#00F0FF]/20 hover:border-[#00F0FF] text-slate-200 hover:text-[#00F0FF] transition-all block">
+                        <div class="font-bold text-white mb-1">Inquiries</div>
+                        <div class="text-[11px] text-slate-400">Review incoming leads</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private int projectsCount;
+    private int skillsCount;
+    private int experiencesCount;
+    private int unreadMessagesCount;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var projects = await PortfolioService.GetProjectsAsync();
+        var skills = await PortfolioService.GetSkillsAsync();
+        var experiences = await PortfolioService.GetExperiencesAsync();
+        var messages = await PortfolioService.GetMessagesAsync();
+
+        projectsCount = projects.Count;
+        skillsCount = skills.Count;
+        experiencesCount = experiences.Count;
+        unreadMessagesCount = messages.Count(m => !m.IsRead);
+    }
+}

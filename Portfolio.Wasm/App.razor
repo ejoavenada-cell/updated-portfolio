@@ -1,0 +1,25 @@
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly" NotFoundPage="typeof(Pages.NotFound)">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <NotAuthorized>
+                    <div class="min-h-screen bg-[#05070B] text-slate-100 flex items-center justify-center p-6">
+                        <div class="glass-panel p-8 max-w-md w-full text-center border border-[#00F0FF]/30 rounded-2xl shadow-[0_0_30px_rgba(0,240,255,0.15)]">
+                            <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-400">
+                                <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                            </div>
+                            <h2 class="text-xl font-bold font-mono text-white mb-2">ACCESS RESTRICTED</h2>
+                            <p class="text-slate-400 text-sm mb-6">You must authenticate with admin credentials to access this control plane.</p>
+                            <a href="/login" class="inline-flex items-center justify-center px-6 py-2.5 rounded-xl font-mono text-sm font-semibold bg-[#00F0FF] text-[#05070B] hover:bg-[#00F0FF]/90 transition-all shadow-[0_0_15px_rgba(0,240,255,0.4)]">
+                                Sign In to Admin
+                            </a>
+                        </div>
+                    </div>
+                </NotAuthorized>
+            </AuthorizeRouteView>
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </Found>
+    </Router>
+</CascadingAuthenticationState>

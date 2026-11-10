@@ -1,0 +1,183 @@
+@page "/admin/experience"
+@layout AdminLayout
+@attribute [Authorize]
+@inject PortfolioDataService PortfolioService
+
+<PageTitle>Skills & Timeline | Admin</PageTitle>
+
+<div class="max-w-6xl space-y-10">
+    <div>
+        <h1 class="text-2xl font-bold text-white font-sans">Skills & Timeline Manager</h1>
+        <p class="text-xs font-mono text-[#00F0FF]">MANAGE PRODUCTION COMPETENCIES AND CAREER TRACK RECORD</p>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 1. SKILLS MANAGER                          -->
+    <!-- ========================================== -->
+    <div class="glass-panel p-6 sm:p-8 rounded-2xl border border-[#00F0FF]/25 space-y-6">
+        <div class="flex items-center justify-between border-b border-[#00F0FF]/15 pb-4">
+            <div>
+                <h2 class="text-lg font-bold font-mono text-white">Technical Skills Index</h2>
+                <span class="text-xs text-slate-400">Total skills: @skills.Count</span>
+            </div>
+        </div>
+
+        <!-- Add Skill Form -->
+        <div class="p-4 rounded-xl bg-[#111A2E]/50 border border-[#00F0FF]/20 grid grid-cols-1 sm:grid-cols-4 gap-3">
+            <div>
+                <label class="block text-[11px] font-mono text-slate-400 mb-1">SKILL NAME</label>
+                <input @bind="newSkill.Name" placeholder="e.g. C# / .NET 10" class="w-full px-3 py-2 rounded-lg bg-[#05070B] text-white border border-[#00F0FF]/25 text-xs font-mono" />
+            </div>
+
+            <div>
+                <label class="block text-[11px] font-mono text-slate-400 mb-1">CATEGORY</label>
+                <select @bind="newSkill.Category" class="w-full px-3 py-2 rounded-lg bg-[#05070B] text-white border border-[#00F0FF]/25 text-xs font-mono">
+                    <option value="Backend">Backend</option>
+                    <option value="Frontend">Frontend</option>
+                    <option value="Tools">Tools</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-[11px] font-mono text-slate-400 mb-1">DISPLAY ORDER</label>
+                <input @bind="newSkill.DisplayOrder" type="number" class="w-full px-3 py-2 rounded-lg bg-[#05070B] text-white border border-[#00F0FF]/25 text-xs font-mono" />
+            </div>
+
+            <div class="flex items-end">
+                <button @onclick="AddSkill" class="w-full py-2 rounded-lg bg-[#00F0FF] text-[#05070B] font-bold font-mono text-xs hover:bg-[#00F0FF]/90 transition-all">
+                    + Add Skill
+                </button>
+            </div>
+        </div>
+
+        <!-- Skills Badges List -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            @foreach (var skill in skills.OrderBy(s => s.Category).ThenBy(s => s.DisplayOrder))
+            {
+                <div class="p-3 rounded-xl bg-[#111A2E] border border-[#00F0FF]/20 flex items-center justify-between font-mono text-xs">
+                    <div>
+                        <span class="text-white font-medium">@skill.Name</span>
+                        <span class="text-[10px] text-[#00F0FF] ml-2 px-1.5 py-0.5 rounded bg-[#05070B] border border-[#00F0FF]/20">@skill.Category</span>
+                    </div>
+                    <button @onclick="@(() => DeleteSkill(skill.Id))" class="text-red-400 hover:text-red-300 ml-2">✕</button>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 2. EXPERIENCES TIMELINE MANAGER            -->
+    <!-- ========================================== -->
+    <div class="glass-panel p-6 sm:p-8 rounded-2xl border border-[#00F0FF]/25 space-y-6">
+        <div class="flex items-center justify-between border-b border-[#00F0FF]/15 pb-4">
+            <div>
+                <h2 class="text-lg font-bold font-mono text-white">Career & Education Timeline</h2>
+                <span class="text-xs text-slate-400">Total milestones: @experiences.Count</span>
+            </div>
+        </div>
+
+        <!-- Add Experience Form -->
+        <div class="p-4 rounded-xl bg-[#111A2E]/50 border border-[#00F0FF]/20 space-y-3">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                    <label class="block text-[11px] font-mono text-slate-400 mb-1">ROLE OR DEGREE</label>
+                    <input @bind="newExperience.RoleOrDegree" placeholder="Senior .NET Engineer" class="w-full px-3 py-2 rounded-lg bg-[#05070B] text-white border border-[#00F0FF]/25 text-xs font-mono" />
+                </div>
+                <div>
+                    <label class="block text-[11px] font-mono text-slate-400 mb-1">ORGANIZATION</label>
+                    <input @bind="newExperience.Organization" placeholder="Apex Digital Systems" class="w-full px-3 py-2 rounded-lg bg-[#05070B] text-white border border-[#00F0FF]/25 text-xs font-mono" />
+                </div>
+                <div>
+                    <label class="block text-[11px] font-mono text-slate-400 mb-1">PERIOD</label>
+                    <input @bind="newExperience.Period" placeholder="2023 - Present" class="w-full px-3 py-2 rounded-lg bg-[#05070B] text-white border border-[#00F0FF]/25 text-xs font-mono" />
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-[11px] font-mono text-slate-400 mb-1">DESCRIPTION</label>
+                <textarea @bind="newExperience.Description" rows="2" placeholder="Key achievements and architectural scope..." class="w-full px-3 py-2 rounded-lg bg-[#05070B] text-white border border-[#00F0FF]/25 text-xs font-mono"></textarea>
+            </div>
+
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <select @bind="newExperience.Type" class="px-3 py-1.5 rounded-lg bg-[#05070B] text-white border border-[#00F0FF]/25 text-xs font-mono">
+                        <option value="Work">Work</option>
+                        <option value="Education">Education</option>
+                        <option value="Certification">Certification</option>
+                    </select>
+                </div>
+                <button @onclick="AddExperience" class="px-5 py-2 rounded-lg bg-[#00F0FF] text-[#05070B] font-bold font-mono text-xs hover:bg-[#00F0FF]/90 transition-all">
+                    + Add Timeline Item
+                </button>
+            </div>
+        </div>
+
+        <!-- Timeline Items List -->
+        <div class="space-y-3">
+            @foreach (var exp in experiences.OrderBy(e => e.DisplayOrder))
+            {
+                <div class="p-4 rounded-xl bg-[#111A2E] border border-[#00F0FF]/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="font-bold text-white text-sm">@exp.RoleOrDegree</span>
+                            <span class="text-xs font-mono text-[#00F0FF]">(@exp.Organization)</span>
+                            <span class="text-[10px] font-mono text-slate-400">@exp.Period</span>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-1">@exp.Description</p>
+                    </div>
+                    <button @onclick="@(() => DeleteExperience(exp.Id))" class="px-3 py-1 rounded bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs font-mono w-fit">
+                        Delete
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<SkillItem> skills = new();
+    private List<ExperienceItem> experiences = new();
+
+    private SkillItem newSkill = new() { Category = "Backend", DisplayOrder = 1 };
+    private ExperienceItem newExperience = new() { Type = "Work", DisplayOrder = 1 };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        skills = await PortfolioService.GetSkillsAsync(forceReload: true);
+        experiences = await PortfolioService.GetExperiencesAsync(forceReload: true);
+    }
+
+    private async Task AddSkill()
+    {
+        if (string.IsNullOrWhiteSpace(newSkill.Name)) return;
+        await PortfolioService.SaveSkillAsync(newSkill);
+        newSkill = new() { Category = "Backend", DisplayOrder = skills.Count + 1 };
+        await LoadData();
+    }
+
+    private async Task DeleteSkill(Guid id)
+    {
+        await PortfolioService.DeleteSkillAsync(id);
+        await LoadData();
+    }
+
+    private async Task AddExperience()
+    {
+        if (string.IsNullOrWhiteSpace(newExperience.RoleOrDegree)) return;
+        newExperience.DisplayOrder = experiences.Count + 1;
+        await PortfolioService.SaveExperienceAsync(newExperience);
+        newExperience = new() { Type = "Work", DisplayOrder = experiences.Count + 1 };
+        await LoadData();
+    }
+
+    private async Task DeleteExperience(Guid id)
+    {
+        await PortfolioService.DeleteExperienceAsync(id);
+        await LoadData();
+    }
+}

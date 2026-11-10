@@ -1,0 +1,92 @@
+@page "/login"
+@inject SupabaseAuthStateProvider AuthStateProvider
+@inject NavigationManager Navigation
+
+<PageTitle>Admin Sign In | Erick John</PageTitle>
+
+<div class="min-h-[75vh] flex items-center justify-center py-12 px-4">
+    <div class="glass-panel rounded-3xl p-8 sm:p-10 max-w-md w-full border border-[#00F0FF]/30 shadow-[0_0_40px_rgba(0,240,255,0.15)] relative">
+        <div class="text-center mb-8">
+            <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-gradient-to-tr from-[#00F0FF] to-[#2563EB] p-[2px] shadow-[0_0_20px_rgba(0,240,255,0.4)]">
+                <div class="w-full h-full bg-[#05070B] rounded-[14px] flex items-center justify-center text-[#00F0FF]">
+                    <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                </div>
+            </div>
+            <h1 class="text-2xl font-bold font-sans text-white">Admin Authentication</h1>
+            <p class="text-xs font-mono text-slate-400 mt-1">SECURE PORTAL TO PORTFOLIO CONTROL PLANE</p>
+        </div>
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="mb-6 p-3 rounded-xl bg-red-500/10 border border-red-500/40 text-red-400 text-xs font-mono">
+                ⚠ @errorMessage
+            </div>
+        }
+
+        <EditForm Model="@loginModel" OnValidSubmit="HandleLogin" class="space-y-4">
+            <div>
+                <label class="block text-xs font-mono text-slate-300 mb-1.5">EMAIL IDENTIFIER</label>
+                <input @bind="loginModel.Email" type="text" required placeholder="admin@erick.dev"
+                       class="w-full px-4 py-2.5 rounded-xl bg-[#111A2E] text-white border border-[#00F0FF]/25 focus:border-[#00F0FF] focus:outline-none focus:ring-1 focus:ring-[#00F0FF] text-sm font-mono transition-all" />
+            </div>
+
+            <div>
+                <label class="block text-xs font-mono text-slate-300 mb-1.5">PASSPHRASE</label>
+                <input @bind="loginModel.Password" type="password" required placeholder="••••••••"
+                       class="w-full px-4 py-2.5 rounded-xl bg-[#111A2E] text-white border border-[#00F0FF]/25 focus:border-[#00F0FF] focus:outline-none focus:ring-1 focus:ring-[#00F0FF] text-sm font-mono transition-all" />
+            </div>
+
+            <button type="submit" disabled="@isAuthenticating"
+                    class="w-full mt-2 py-3 rounded-xl bg-[#00F0FF] text-[#05070B] font-bold font-mono text-sm hover:bg-[#00F0FF]/90 transition-all shadow-[0_0_20px_rgba(0,240,255,0.4)] disabled:opacity-50">
+                @(isAuthenticating ? "AUTHENTICATING..." : "AUTHORIZE ACCESS")
+            </button>
+        </EditForm>
+
+        <div class="mt-6 pt-4 border-t border-[#00F0FF]/15 text-center">
+            <span class="text-[11px] font-mono text-slate-500">
+                Dev / Demo fallback: <code class="text-[#00F0FF]">admin@erick.dev</code> / <code class="text-[#00F0FF]">admin123</code>
+            </span>
+        </div>
+    </div>
+</div>
+
+@code {
+    private LoginCredentials loginModel = new();
+    private string? errorMessage;
+    private bool isAuthenticating;
+
+    public class LoginCredentials
+    {
+        public string Email { get; set; } = "admin@erick.dev";
+        public string Password { get; set; } = string.Empty;
+    }
+
+    private async Task HandleLogin()
+    {
+        isAuthenticating = true;
+        errorMessage = null;
+
+        try
+        {
+            var success = await AuthStateProvider.SignInAsync(loginModel.Email, loginModel.Password);
+            if (success)
+            {
+                Navigation.NavigateTo("/admin");
+            }
+            else
+            {
+                errorMessage = "Invalid credentials. Verify your Supabase user or demo credentials.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            isAuthenticating = false;
+        }
+    }
+}
