@@ -6,7 +6,9 @@ namespace Portfolio.Wasm.Models;
 [Table("profile_settings")]
 public class ProfileSettings : BaseModel
 {
-    [PrimaryKey("id", false)] public Guid Id { get; set; } = Guid.NewGuid();
+    public static readonly Guid DefaultProfileId = Guid.Parse("00000000-0000-0000-0000-000000000001");
+
+    [PrimaryKey("id", false)] public Guid Id { get; set; } = DefaultProfileId;
     [Column("full_name")] public string FullName { get; set; } = "Erick John";
     [Column("headline")] public string Headline { get; set; } = ".NET & Full-Stack Software Developer";
     [Column("status_text")] public string StatusText { get; set; } = "Available for Opportunities";

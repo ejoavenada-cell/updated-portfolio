@@ -82,6 +82,86 @@
     </div>
 
     <script>
+        window.portfolioStorage = {
+            dbPromise: null,
+            getDb: function () {
+                if (!this.dbPromise) {
+                    this.dbPromise = new Promise(function (resolve) {
+                        try {
+                            var req = indexedDB.open('PortfolioDataStore', 1);
+                            req.onupgradeneeded = function (e) {
+                                var db = e.target.result;
+                                if (!db.objectStoreNames.contains('store')) {
+                                    db.createObjectStore('store');
+                                }
+                            };
+                            req.onsuccess = function (e) { resolve(e.target.result); };
+                            req.onerror = function () { resolve(null); };
+                        } catch (err) {
+                            resolve(null);
+                        }
+                    });
+                }
+                return this.dbPromise;
+            },
+            get: async function (key) {
+                try {
+                    var db = await this.getDb();
+                    if (db) {
+                        var val = await new Promise(function (resolve) {
+                            try {
+                                var tx = db.transaction('store', 'readonly');
+                                var store = tx.objectStore('store');
+                                var req = store.get(key);
+                                req.onsuccess = function () { resolve(req.result); };
+                                req.onerror = function () { resolve(null); };
+                            } catch (e) { resolve(null); }
+                        });
+                        if (val !== undefined && val !== null) return val;
+                    }
+                } catch (e) { }
+                try {
+                    return localStorage.getItem(key);
+                } catch (e) { return null; }
+            },
+            set: async function (key, val) {
+                try {
+                    localStorage.setItem(key, val);
+                } catch (e) { /* ignore localStorage quota error */ }
+                try {
+                    var db = await this.getDb();
+                    if (db) {
+                        await new Promise(function (resolve) {
+                            try {
+                                var tx = db.transaction('store', 'readwrite');
+                                var store = tx.objectStore('store');
+                                var req = store.put(val, key);
+                                req.onsuccess = function () { resolve(); };
+                                req.onerror = function () { resolve(); };
+                            } catch (e) { resolve(); }
+                        });
+                    }
+                } catch (e) { }
+            },
+            remove: async function (key) {
+                try { localStorage.removeItem(key); } catch (e) { }
+                try {
+                    var db = await this.getDb();
+                    if (db) {
+                        await new Promise(function (resolve) {
+                            try {
+                                var tx = db.transaction('store', 'readwrite');
+                                var store = tx.objectStore('store');
+                                var req = store.delete(key);
+                                req.onsuccess = function () { resolve(); };
+                                req.onerror = function () { resolve(); };
+                            } catch (e) { resolve(); }
+                        });
+                    }
+                } catch (e) { }
+            }
+        };
+
         window.registerCommandPaletteShortcut = (dotNetHelper) => {
             window.addEventListener('keydown', (e) => {
                 if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
