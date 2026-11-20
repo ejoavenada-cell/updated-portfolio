@@ -1,0 +1,99 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 2022 >>
+stream
+BT
+/F2 22 Tf
+50 740 Td
+(ERICK JOHN) Tj
+/F1 12 Tf
+0 -22 Td
+(.NET 10 & Blazor Full-Stack Software Engineer) Tj
+/F1 10 Tf
+0 -18 Td
+(Email: erickjohn.dev@example.com | GitHub: github.com/ejoavenada-cell | Portfolio: updated-portfolio-gilt-psi.vercel.app) Tj
+
+/F2 13 Tf
+0 -30 Td
+(EXECUTIVE PROFILE) Tj
+/F1 10 Tf
+0 -16 Td
+(Software Engineer specializing in modern enterprise architectures using C# 13, .NET 10 Blazor WebAssembly,) Tj
+0 -14 Td
+(PostgreSQL / Supabase Row-Level Security, and cloud-native microservices with clean code paradigms.) Tj
+
+/F2 13 Tf
+0 -28 Td
+(CORE TECHNICAL COMPETENCIES) Tj
+/F1 10 Tf
+0 -16 Td
+(Languages & Frameworks: C# 13, .NET 10, Blazor WebAssembly, ASP.NET Core Web API, EF Core, TypeScript) Tj
+0 -14 Td
+(Cloud, Database & DevOps: PostgreSQL, Supabase RLS, Docker, Vercel, Git CI/CD, Microservices) Tj
+0 -14 Td
+(Architecture & Practices: Clean Architecture, CQRS, Domain-Driven Design, Zero-Trust RLS, Spec-Driven Dev) Tj
+
+/F2 13 Tf
+0 -28 Td
+(PROFESSIONAL EXPERIENCE) Tj
+/F2 11 Tf
+0 -18 Td
+(Senior .NET & Blazor Engineer - CyberCloud Systems (2023 - Present)) Tj
+/F1 10 Tf
+0 -14 Td
+(- Architected high-throughput telemetry analytics dashboard serving 10M+ daily events with sub-second latency.) Tj
+0 -14 Td
+(- Engineered zero-cold-start Blazor WASM frontend integrated with PostgreSQL Row-Level Security.) Tj
+0 -14 Td
+(- Led code review cycles and automated CI/CD static asset delivery across cloud targets.) Tj
+
+/F2 11 Tf
+0 -20 Td
+(Software Engineer (.NET / Web) - Nova Innovations (2021 - 2023)) Tj
+/F1 10 Tf
+0 -14 Td
+(- Built modular Single Page Applications in Blazor and React connected to secured REST & GraphQL APIs.) Tj
+0 -14 Td
+(- Designed relational schemas and database migrations with automated index optimization.) Tj
+
+/F2 13 Tf
+0 -28 Td
+(EDUCATION & CREDENTIALS) Tj
+/F2 11 Tf
+0 -16 Td
+(B.S. in Computer Science / Information Technology (2017 - 2021)) Tj
+/F1 10 Tf
+0 -14 Td
+(University Institute of Technology - Focus on Object-Oriented Software Design and Distributed Systems) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+6 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000251 00000 n 
+0000002325 00000 n 
+0000002395 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+2470
+%%EOF

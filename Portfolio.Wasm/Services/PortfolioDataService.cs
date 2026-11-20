@@ -1,3 +1,5 @@
+using System.Text.Json;
+using Microsoft.JSInterop;
 using Portfolio.Wasm.Models;
 
 namespace Portfolio.Wasm.Services;
@@ -5,6 +7,7 @@ namespace Portfolio.Wasm.Services;
 public class PortfolioDataService
 {
     private readonly Supabase.Client? _supabase;
+    private readonly IJSRuntime? _js;
 
     // In-memory cache for ultra-fast instant 0ms navigation
     private ProfileSettings? _cachedProfile;
@@ -13,12 +16,39 @@ public class PortfolioDataService
     private List<ExperienceItem>? _cachedExperiences;
     private List<ContactMessage>? _cachedMessages;
 
-    public PortfolioDataService() : this(null) { }
+    public PortfolioDataService() : this(null, null) { }
 
-    public PortfolioDataService(Supabase.Client? supabase = null)
+    public PortfolioDataService(Supabase.Client? supabase = null, IJSRuntime? js = null)
     {
         _supabase = supabase;
+        _js = js;
         InitializeMockData();
+    }
+
+    private async Task SetLocalAsync<T>(string key, T data)
+    {
+        if (_js == null) return;
+        try
+        {
+            var json = JsonSerializer.Serialize(data);
+            await _js.InvokeVoidAsync("localStorage.setItem", key, json);
+        }
+        catch { }
+    }
+
+    private async Task<T?> GetLocalAsync<T>(string key)
+    {
+        if (_js == null) return default;
+        try
+        {
+            var json = await _js.InvokeAsync<string?>("localStorage.getItem", key);
+            if (!string.IsNullOrWhiteSpace(json))
+            {
+                return JsonSerializer.Deserialize<T>(json);
+            }
+        }
+        catch { }
+        return default;
     }
 
     private void InitializeMockData()
@@ -32,7 +62,7 @@ public class PortfolioDataService
             EmailAddress = "erickjohn.dev@example.com",
             GithubUrl = "https://github.com",
             LinkedinUrl = "https://linkedin.com",
-            ResumeUrl = "#",
+            ResumeUrl = "documents/Erick_John_Resume.pdf",
             AvatarUrl = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80"
         };
 
@@ -166,6 +196,7 @@ public class PortfolioDataService
                 if (response != null)
                 {
                     _cachedProfile = response;
+                    await SetLocalAsync("portfolio_profile", _cachedProfile);
                     return _cachedProfile;
                 }
             }
@@ -175,6 +206,13 @@ public class PortfolioDataService
             }
         }
 
+        var local = await GetLocalAsync<ProfileSettings>("portfolio_profile");
+        if (local != null)
+        {
+            _cachedProfile = local;
+            return _cachedProfile;
+        }
+
         return _cachedProfile ??= new ProfileSettings();
     }
 
@@ -182,6 +220,7 @@ public class PortfolioDataService
     {
         profile.UpdatedAt = DateTime.UtcNow;
         _cachedProfile = profile;
+        await SetLocalAsync("portfolio_profile", profile);
 
         if (_supabase != null)
         {
@@ -215,6 +254,7 @@ public class PortfolioDataService
                 if (response?.Models?.Count > 0)
                 {
                     _cachedProjects = response.Models;
+                    await SetLocalAsync("portfolio_projects", _cachedProjects);
                     return _cachedProjects;
                 }
             }
@@ -222,6 +262,13 @@ public class PortfolioDataService
             {
                 Console.WriteLine($"Supabase GetProjects error: {ex.Message}");
             }
+        }
+
+        var local = await GetLocalAsync<List<ProjectItem>>("portfolio_projects");
+        if (local != null && local.Count > 0)
+        {
+            _cachedProjects = local;
+            return _cachedProjects;
         }
 
         return _cachedProjects ??= new();
@@ -244,6 +291,8 @@ public class PortfolioDataService
         else
             _cachedProjects.Add(project);
 
+        await SetLocalAsync("portfolio_projects", _cachedProjects);
+
         if (_supabase != null)
         {
             try
@@ -260,6 +309,7 @@ public class PortfolioDataService
     public async Task DeleteProjectAsync(Guid id)
     {
         _cachedProjects?.RemoveAll(p => p.Id == id);
+        await SetLocalAsync("portfolio_projects", _cachedProjects);
 
         if (_supabase != null)
         {
@@ -293,6 +343,7 @@ public class PortfolioDataService
                 if (response?.Models?.Count > 0)
                 {
                     _cachedSkills = response.Models;
+                    await SetLocalAsync("portfolio_skills", _cachedSkills);
                     return _cachedSkills;
                 }
             }
@@ -300,6 +351,13 @@ public class PortfolioDataService
             {
                 Console.WriteLine($"Supabase GetSkills error: {ex.Message}");
             }
+        }
+
+        var local = await GetLocalAsync<List<SkillItem>>("portfolio_skills");
+        if (local != null && local.Count > 0)
+        {
+            _cachedSkills = local;
+            return _cachedSkills;
         }
 
         return _cachedSkills ??= new();
@@ -315,6 +373,8 @@ public class PortfolioDataService
             _cachedSkills[index] = skill;
         else
             _cachedSkills.Add(skill);
+
+        await SetLocalAsync("portfolio_skills", _cachedSkills);
 
         if (_supabase != null)
         {
@@ -332,6 +392,7 @@ public class PortfolioDataService
     public async Task DeleteSkillAsync(Guid id)
     {
         _cachedSkills?.RemoveAll(s => s.Id == id);
+        await SetLocalAsync("portfolio_skills", _cachedSkills);
 
         if (_supabase != null)
         {
@@ -365,6 +426,7 @@ public class PortfolioDataService
                 if (response?.Models?.Count > 0)
                 {
                     _cachedExperiences = response.Models;
+                    await SetLocalAsync("portfolio_experiences", _cachedExperiences);
                     return _cachedExperiences;
                 }
             }
@@ -372,6 +434,13 @@ public class PortfolioDataService
             {
                 Console.WriteLine($"Supabase GetExperiences error: {ex.Message}");
             }
+        }
+
+        var local = await GetLocalAsync<List<ExperienceItem>>("portfolio_experiences");
+        if (local != null && local.Count > 0)
+        {
+            _cachedExperiences = local;
+            return _cachedExperiences;
         }
 
         return _cachedExperiences ??= new();
@@ -387,6 +456,8 @@ public class PortfolioDataService
             _cachedExperiences[index] = experience;
         else
             _cachedExperiences.Add(experience);
+
+        await SetLocalAsync("portfolio_experiences", _cachedExperiences);
 
         if (_supabase != null)
         {
@@ -404,6 +475,7 @@ public class PortfolioDataService
     public async Task DeleteExperienceAsync(Guid id)
     {
         _cachedExperiences?.RemoveAll(e => e.Id == id);
+        await SetLocalAsync("portfolio_experiences", _cachedExperiences);
 
         if (_supabase != null)
         {
@@ -437,6 +509,7 @@ public class PortfolioDataService
                 if (response?.Models != null)
                 {
                     _cachedMessages = response.Models;
+                    await SetLocalAsync("portfolio_messages", _cachedMessages);
                     return _cachedMessages;
                 }
             }
@@ -444,6 +517,13 @@ public class PortfolioDataService
             {
                 Console.WriteLine($"Supabase GetMessages error: {ex.Message}");
             }
+        }
+
+        var local = await GetLocalAsync<List<ContactMessage>>("portfolio_messages");
+        if (local != null && local.Count > 0)
+        {
+            _cachedMessages = local;
+            return _cachedMessages;
         }
 
         return _cachedMessages ??= new();
@@ -454,6 +534,7 @@ public class PortfolioDataService
         message.CreatedAt = DateTime.UtcNow;
         _cachedMessages ??= new();
         _cachedMessages.Insert(0, message);
+        await SetLocalAsync("portfolio_messages", _cachedMessages);
 
         if (_supabase != null)
         {
@@ -465,7 +546,6 @@ public class PortfolioDataService
             catch (Exception ex)
             {
                 Console.WriteLine($"Supabase SendMessage error: {ex.Message}");
-                // Return true anyway so the user gets pleasant UI in offline/demo mode
                 return true;
             }
         }
@@ -478,6 +558,8 @@ public class PortfolioDataService
         var msg = _cachedMessages?.FirstOrDefault(m => m.Id == id);
         if (msg != null)
             msg.IsRead = isRead;
+
+        await SetLocalAsync("portfolio_messages", _cachedMessages);
 
         if (_supabase != null)
         {
@@ -498,6 +580,7 @@ public class PortfolioDataService
     public async Task DeleteMessageAsync(Guid id)
     {
         _cachedMessages?.RemoveAll(m => m.Id == id);
+        await SetLocalAsync("portfolio_messages", _cachedMessages);
 
         if (_supabase != null)
         {

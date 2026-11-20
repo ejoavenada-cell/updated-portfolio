@@ -31,6 +31,7 @@
                 <a href="/#projects" class="hover:text-[#00F0FF] transition-colors">Projects</a>
                 <a href="/#skills" class="hover:text-[#00F0FF] transition-colors">Tech Stack</a>
                 <a href="/#timeline" class="hover:text-[#00F0FF] transition-colors">Experience</a>
+                <a href="/#resume" class="hover:text-[#00F0FF] transition-colors">Resume</a>
                 <a href="/#contact" class="hover:text-[#00F0FF] transition-colors">Contact</a>
             </div>
 
@@ -146,6 +147,14 @@
                         <span>Career Timeline & Experience</span>
                     </span>
                     <span class="text-[10px] text-slate-500">#timeline</span>
+                </button>
+
+                <button @onclick="@(() => NavigateAndClose("/#resume"))" class="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-[#111A2E] hover:text-[#00F0FF] transition-colors text-slate-300 text-left">
+                    <span class="flex items-center space-x-2">
+                        <span class="text-[#00F0FF]">→</span>
+                        <span>Curriculum Vitae & Resume Preview</span>
+                    </span>
+                    <span class="text-[10px] text-slate-500">#resume</span>
                 </button>
 
                 <button @onclick="@(() => NavigateAndClose("/#contact"))" class="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-[#111A2E] hover:text-[#00F0FF] transition-colors text-slate-300 text-left">

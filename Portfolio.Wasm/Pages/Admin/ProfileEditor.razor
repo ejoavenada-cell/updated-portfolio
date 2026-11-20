@@ -71,14 +71,30 @@
                     </div>
                 </div>
 
-                <!-- Avatar Upload -->
-                <div class="pt-2 border-t border-[#00F0FF]/15">
-                    <label class="block text-xs font-mono text-slate-300 mb-2">UPDATE AVATAR (OPTIMIZED TO WEBP)</label>
-                    <InputFile OnChange="HandleAvatarUpload" class="text-xs font-mono text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[#00F0FF] file:text-[#05070B] hover:file:bg-[#00F0FF]/90 cursor-pointer" />
-                    @if (isUploading)
-                    {
-                        <span class="inline-block mt-2 text-xs font-mono text-[#00F0FF]">Resizing & uploading WebP...</span>
-                    }
+                <!-- Upload Controls -->
+                <div class="pt-4 border-t border-[#00F0FF]/15 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Avatar Upload -->
+                    <div>
+                        <label class="block text-xs font-mono text-slate-300 mb-2">UPDATE AVATAR (OPTIMIZED WEBP)</label>
+                        <InputFile OnChange="HandleAvatarUpload" class="text-xs font-mono text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[#00F0FF] file:text-[#05070B] hover:file:bg-[#00F0FF]/90 cursor-pointer" />
+                        @if (isUploading)
+                        {
+                            <span class="inline-block mt-2 text-xs font-mono text-[#00F0FF]">Resizing & uploading WebP...</span>
+                        }
+                    </div>
+
+                    <!-- Resume PDF Upload -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <label class="text-xs font-mono text-slate-300">UPDATE RESUME (PDF)</label>
+                            <a href="/admin/resume" class="text-[10px] font-mono text-[#00F0FF] hover:underline">Full CV Manager →</a>
+                        </div>
+                        <InputFile OnChange="HandleResumeUpload" accept=".pdf,application/pdf" class="text-xs font-mono text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[#00F0FF] file:text-[#05070B] hover:file:bg-[#00F0FF]/90 cursor-pointer" />
+                        @if (isUploadingResume)
+                        {
+                            <span class="inline-block mt-2 text-xs font-mono text-[#00F0FF]">Uploading PDF resume...</span>
+                        }
+                    </div>
                 </div>
 
                 <div class="pt-4">
@@ -120,11 +136,36 @@
     private ProfileSettings? profile;
     private bool isSaving;
     private bool isUploading;
+    private bool isUploadingResume;
     private bool savedNotification;
 
     protected override async Task OnInitializedAsync()
     {
         profile = await PortfolioService.GetProfileAsync();
+    }
+
+    private async Task HandleResumeUpload(InputFileChangeEventArgs e)
+    {
+        if (profile == null) return;
+        var file = e.File;
+        if (file == null) return;
+        isUploadingResume = true;
+        try
+        {
+            var url = await Storage.UploadPdfAsync(file, "resumes");
+            profile.ResumeUrl = url;
+            await PortfolioService.SaveProfileAsync(profile);
+            savedNotification = true;
+            _ = Task.Delay(3000).ContinueWith(_ => { savedNotification = false; InvokeAsync(StateHasChanged); });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Resume upload error: {ex.Message}");
+        }
+        finally
+        {
+            isUploadingResume = false;
+        }
     }
 
     private async Task HandleAvatarUpload(InputFileChangeEventArgs e)

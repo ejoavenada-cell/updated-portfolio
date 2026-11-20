@@ -50,4 +50,41 @@ public class StorageService
         var base64 = Convert.ToBase64String(bytes);
         return $"data:image/webp;base64,{base64}";
     }
+
+    public async Task<string> UploadPdfAsync(IBrowserFile file, string folder = "resumes")
+    {
+        // Max 15 MB for PDF Resume
+        using var stream = file.OpenReadStream(maxAllowedSize: 15 * 1024 * 1024);
+        using var ms = new MemoryStream();
+        await stream.CopyToAsync(ms);
+        var bytes = ms.ToArray();
+
+        var safeFileName = Path.GetFileNameWithoutExtension(file.Name);
+        var cleanFileName = System.Text.RegularExpressions.Regex.Replace(safeFileName, @"[^a-zA-Z0-9_\-]", "_");
+        var fileName = $"{folder}/{cleanFileName}_{Guid.NewGuid():N}.pdf";
+
+        if (_supabase != null)
+        {
+            try
+            {
+                await _supabase.Storage
+                    .From(BucketName)
+                    .Upload(bytes, fileName, new Supabase.Storage.FileOptions
+                    {
+                        ContentType = "application/pdf",
+                        Upsert = true
+                    });
+
+                return _supabase.Storage.From(BucketName).GetPublicUrl(fileName);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Supabase storage PDF upload error: {ex.Message}");
+            }
+        }
+
+        // Fallback for local preview: base64 data URL
+        var base64 = Convert.ToBase64String(bytes);
+        return $"data:application/pdf;base64,{base64}";
+    }
 }
