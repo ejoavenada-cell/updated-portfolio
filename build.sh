@@ -19,7 +19,7 @@ cp dist/wwwroot/index.html dist/wwwroot/404.html
 # Fallback safeguard: ensure dotnet.js is always reachable at _framework/dotnet.js
 if [ ! -f dist/wwwroot/_framework/dotnet.js ]; then
   echo "==> Safeguard: Copying dotnet runtime entrypoint to dist/wwwroot/_framework/dotnet.js"
-  cp dist/wwwroot/_framework/dotnet.*.js dist/wwwroot/_framework/dotnet.js 2>/dev/null || cp dist/dotnet.js dist/wwwroot/_framework/dotnet.js
+  cp dist/wwwroot/_framework/dotnet.*.js dist/wwwroot/_framework/dotnet.js 2>/dev/null || true
 fi
 
 echo "==> Build complete! Output is in dist/wwwroot"
