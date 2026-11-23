@@ -1,0 +1,176 @@
+﻿<!DOCTYPE html>
+<html lang="en" style="--blazor-load-percentage: 99.55156950672645%; --blazor-load-percentage-text: &quot;99%&quot;;"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erick John | .NET 10 &amp; Blazor Full-Stack Engineer</title>
+    <base href="/">
+    
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN for JIT styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        obsidian: '#05070B',
+                        deepNavy: '#0A0F1D',
+                        midnightNavy: '#111A2E',
+                        electricCyan: '#00F0FF',
+                        royalBlue: '#2563EB'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="css/app.css">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link href="Portfolio.Wasm.styles.css" rel="stylesheet">
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:Inter, sans-serif;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:JetBrains Mono, monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.my-4{margin-top:1rem;margin-bottom:1rem}.mb-1{margin-bottom:0.25rem}.mb-4{margin-bottom:1rem}.ml-2{margin-left:0.5rem}.mt-2{margin-top:0.5rem}.flex{display:flex}.hidden{display:none}.h-3{height:0.75rem}.w-3{width:0.75rem}.cursor-pointer{cursor:pointer}.items-center{align-items:center}.justify-between{justify-content:space-between}.space-x-2 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.5rem * var(--tw-space-x-reverse));margin-left:calc(0.5rem * calc(1 - var(--tw-space-x-reverse)))}.rounded-full{border-radius:9999px}.border-b{border-bottom-width:1px}.border-\[\#00F0FF\]\/20{border-color:rgb(0 240 255 / 0.2)}.bg-\[\#05070B\]{--tw-bg-opacity:1;background-color:rgb(5 7 11 / var(--tw-bg-opacity, 1))}.bg-emerald-500\/80{background-color:rgb(16 185 129 / 0.8)}.bg-red-500\/80{background-color:rgb(239 68 68 / 0.8)}.bg-yellow-500\/80{background-color:rgb(234 179 8 / 0.8)}.pb-3{padding-bottom:0.75rem}.font-mono{font-family:JetBrains Mono, monospace}.font-sans{font-family:Inter, sans-serif}.text-2xl{font-size:1.5rem;line-height:2rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.tracking-tight{letter-spacing:-0.025em}.tracking-wider{letter-spacing:0.05em}.text-\[\#00F0FF\]{--tw-text-opacity:1;color:rgb(0 240 255 / var(--tw-text-opacity, 1))}.text-\[\#00F0FF\]\/80{color:rgb(0 240 255 / 0.8)}.text-slate-100{--tw-text-opacity:1;color:rgb(241 245 249 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.underline{-webkit-text-decoration-line:underline;text-decoration-line:underline}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.selection\:bg-\[\#00F0FF\]\/30 *::selection{background-color:rgb(0 240 255 / 0.3)}.selection\:text-white *::selection{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.selection\:bg-\[\#00F0FF\]\/30::selection{background-color:rgb(0 240 255 / 0.3)}.selection\:text-white::selection{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}</style></head>
+
+<body class="bg-[#05070B] text-slate-100 antialiased selection:bg-[#00F0FF]/30 selection:text-white">
+    <div id="app">
+        <!-- Cyber-Navy WASM Terminal Preloader -->
+        <div class="wasm-loader-container">
+            <div class="wasm-loader-box">
+                <div class="flex items-center justify-between mb-4 border-b border-[#00F0FF]/20 pb-3">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded-full bg-red-500/80"></span>
+                        <span class="w-3 h-3 rounded-full bg-yellow-500/80"></span>
+                        <span class="w-3 h-3 rounded-full bg-emerald-500/80"></span>
+                    </div>
+                    <span class="text-xs text-[#00F0FF] font-mono tracking-wider font-semibold">KERNEL v10.0 // AOT_WASM</span>
+                </div>
+
+                <div class="my-4">
+                    <div class="text-2xl font-bold tracking-tight font-sans text-white mb-1">
+                        ERICK JOHN
+                    </div>
+                    <div class="text-xs font-mono text-slate-400">
+                        BOOTING .NET 10 WEB RUNTIME...
+                    </div>
+                </div>
+
+                <!-- Live Progress Bar tied to Blazor's --blazor-load-percentage -->
+                <div class="wasm-progress-bar-bg">
+                    <div class="wasm-progress-bar-fill"></div>
+                </div>
+
+                <div class="flex justify-between items-center text-xs font-mono text-slate-500 mt-2">
+                    <span class="pulse-text text-[#00F0FF]">INITIALIZING RUNTIME</span>
+                    <span class="text-[#00F0FF]/80">STANDALONE WASM</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="blazor-error-ui" class="hidden">
+        An unhandled error has occurred.
+        <a href="." class="reload text-[#00F0FF] underline">Reload</a>
+        <span class="dismiss cursor-pointer ml-2">🗙</span>
+    </div>
+
+    <script>
+        window.portfolioStorage = {
+            dbPromise: null,
+            getDb: function () {
+                if (!this.dbPromise) {
+                    this.dbPromise = new Promise(function (resolve) {
+                        try {
+                            var req = indexedDB.open('PortfolioDataStore', 1);
+                            req.onupgradeneeded = function (e) {
+                                var db = e.target.result;
+                                if (!db.objectStoreNames.contains('store')) {
+                                    db.createObjectStore('store');
+                                }
+                            };
+                            req.onsuccess = function (e) { resolve(e.target.result); };
+                            req.onerror = function () { resolve(null); };
+                        } catch (err) {
+                            resolve(null);
+                        }
+                    });
+                }
+                return this.dbPromise;
+            },
+            get: async function (key) {
+                try {
+                    var db = await this.getDb();
+                    if (db) {
+                        var val = await new Promise(function (resolve) {
+                            try {
+                                var tx = db.transaction('store', 'readonly');
+                                var store = tx.objectStore('store');
+                                var req = store.get(key);
+                                req.onsuccess = function () { resolve(req.result); };
+                                req.onerror = function () { resolve(null); };
+                            } catch (e) { resolve(null); }
+                        });
+                        if (val !== undefined && val !== null) return val;
+                    }
+                } catch (e) { }
+                try {
+                    return localStorage.getItem(key);
+                } catch (e) { return null; }
+            },
+            set: async function (key, val) {
+                try {
+                    localStorage.setItem(key, val);
+                } catch (e) { /* ignore localStorage quota error */ }
+                try {
+                    var db = await this.getDb();
+                    if (db) {
+                        await new Promise(function (resolve) {
+                            try {
+                                var tx = db.transaction('store', 'readwrite');
+                                var store = tx.objectStore('store');
+                                var req = store.put(val, key);
+                                req.onsuccess = function () { resolve(); };
+                                req.onerror = function () { resolve(); };
+                            } catch (e) { resolve(); }
+                        });
+                    }
+                } catch (e) { }
+            },
+            remove: async function (key) {
+                try { localStorage.removeItem(key); } catch (e) { }
+                try {
+                    var db = await this.getDb();
+                    if (db) {
+                        await new Promise(function (resolve) {
+                            try {
+                                var tx = db.transaction('store', 'readwrite');
+                                var store = tx.objectStore('store');
+                                var req = store.delete(key);
+                                req.onsuccess = function () { resolve(); };
+                                req.onerror = function () { resolve(); };
+                            } catch (e) { resolve(); }
+                        });
+                    }
+                } catch (e) { }
+            }
+        };
+
+        window.registerCommandPaletteShortcut = (dotNetHelper) => {
+            window.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+                    e.preventDefault();
+                    dotNetHelper.invokeMethodAsync('ToggleCommandPalette');
+                }
+            });
+        };
+    </script>
+    <script src="_framework/blazor.webassembly.w3qd1tpl0e.js"></script>
+
+
+
+</body></html>

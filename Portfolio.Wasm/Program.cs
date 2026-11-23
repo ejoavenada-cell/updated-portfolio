@@ -43,7 +43,7 @@ if (supabaseClient != null)
 
 // Authentication & Core Services
 builder.Services.AddAuthorizationCore();
-builder.Services.AddScoped(sp => new SupabaseAuthStateProvider(sp.GetService<Supabase.Client>()));
+builder.Services.AddScoped(sp => new SupabaseAuthStateProvider(sp.GetService<Supabase.Client>(), sp.GetService<IJSRuntime>()));
 builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<SupabaseAuthStateProvider>());
 builder.Services.AddScoped(sp => new PortfolioDataService(sp.GetService<Supabase.Client>(), sp.GetService<IJSRuntime>()));
 builder.Services.AddScoped(sp => new StorageService(sp.GetService<Supabase.Client>()));
